@@ -1,0 +1,5 @@
+
+
+
+open terminal and run this:
+python app.py

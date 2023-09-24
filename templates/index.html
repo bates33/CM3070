@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> News Classifier</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+    <link rel="stylesheet" href="static/styles.css" />
+    <!-- Link to your custom styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img
+            src="static/authenticalogo.png"
+            alt="Authentica Logo"
+            height="50"
+          />
+          <!-- Insert the image logo -->
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Made for CM3060 NLP</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div align="center" style="margin-top: 50px" class="container">
+		<div class="card bg-transparent">
+		  <div class="card-header bg-transparent">
+			<h1> News Classifier</h1>
+		  </div>
+		  <div class="card-body bg-transparent">
+			<form>
+			  <br />
+			  <textarea
+				type="text"
+				class="form-control bg-dark text-white"
+				name="news"
+				id="news"
+				placeholder="Enter news here!"
+				rows="5"
+			  ></textarea><br />
+			  <button
+				type="submit"
+				class="btn btn-lg btn-success"
+				name="submit"
+				id="submit"
+			  >
+				Predict
+			  </button>
+			  <button
+				type="button"
+				class="btn btn-lg btn-primary"
+				id="generateRandomHeadline"
+			  >
+				Generate Random Headline
+			  </button>
+			  <button
+				type="button"
+				class="btn btn-lg btn-primary"
+				id="generateRandomText"
+			  >
+				Generate Random News
+			  </button>
+			</form>
+		  </div>
+		</div>
+	  </div>
+
+    <footer class="footer">
+      <div class="container text-center">
+        <p>&copy; 2023 Authentica - News Verifier</p>
+      </div>
+    </footer>
+  </body>
+</html>
+<script>
+  $SCRIPT_ROOT = "{{ url_for('newscheck') }}";
+  $(function () {
+    $("#submit").bind("click", function () {
+      var news = $("#news").val();
+      if (news === "" || news === " " || news === "\n" || news === null) {
+        bootbox.alert({
+          size: "big",
+          title: "No News.",
+          message: "Insert some news!",
+          backdrop: true,
+        });
+      } else {
+        $.getJSON(
+          $SCRIPT_ROOT,
+          {
+            news: news,
+          },
+          function (data) {
+            var src =
+              data.result == "REAL" ? "static/check.gif" : "static/fail.gif";
+            bootbox.alert({
+              size: "big",
+              title: "Prediction",
+              message:
+                "<div align='center'><h2>News is " +
+                data.result +
+                "</h2><img style='width:240px;height:232px;' src='" +
+                src +
+                "'/></div>",
+              backdrop: true,
+              callback: function () {
+                setTimeout(function () {
+                  location.reload();
+                }, 100);
+              },
+            });
+          }
+        );
+      }
+      return false;
+    });
+  });
+  $(function () {
+    function loadCSVAndGenerateNews() {
+      $.ajax({
+        url: "get_random_news", // Provide the correct path to your CSV file
+        dataType: "text",
+        success: function (data) {
+          var lines = data.split("\n");
+          var newsList = [];
+          for (var i = 0; i < lines.length; i++) {
+            var newsText = lines[i].split(",")[0]; // Assuming the first column contains the news text
+            if (newsText.trim() !== "") {
+              newsList.push(newsText);
+            }
+          }
+          const randomEntry =
+            newsList[Math.floor(Math.random() * newsList.length)];
+          $("#news").val(randomEntry);
+        },
+      });
+    }
+
+    // Add event listener for the "Generate Random Text" button
+    $("#generateRandomText").click(function () {
+      $.get("/get_random_news", function (data) {
+        $("#news").val(data.random_news);
+      });
+    });
+  });
+
+  $(function () {
+    function loadCSVAndGenerateHeadline() {
+      $.ajax({
+        url: "get_headline", // Provide the correct path to your CSV file
+        dataType: "text",
+        success: function (data) {
+          var lines = data.split("\n");
+          var newsList = [];
+          for (var i = 0; i < lines.length; i++) {
+            var newsText = lines[i].split(",")[0]; // Assuming the first column contains the news text
+            if (newsText.trim() !== "") {
+              newsList.push(newsText);
+            }
+          }
+          const randomEntry =
+            newsList[Math.floor(Math.random() * newsList.length)];
+          $("#news").val(randomEntry);
+        },
+      });
+    }
+
+
+    // Add event listener for the "Generate Random Text" button
+    $("#generateRandomHeadline").click(function () {
+      $.get("/get_headline", function (data) {
+        $("#news").val(data.random_news);
+      });
+    });
+  });
+</script>

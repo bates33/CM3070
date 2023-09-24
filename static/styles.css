@@ -1,0 +1,71 @@
+
+/* Body styles */
+body {
+    background: rgb(186, 220, 247);
+    color: white;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #ffffff;
+    color: black; /* Change font color to black */
+    margin-bottom: 20px;
+}
+
+/* Navbar links styles */
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: black; /* Change font color to black */
+}
+
+/* Card styles */
+.card {
+    margin-top: 200px;
+    background: transparent;
+    border: 10px;
+    border-width: thick;
+    box-shadow: 10px 10px 10px rgba(0.6, 0.5, 0.5, 0.3);
+}
+
+/* Textarea styles */
+.form-control {
+    background: #333;
+    color: black; /* Change font color to black */
+    width: 2000; /* Add 'px' after the width value */
+}
+
+/* Button styles */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #ffffff;
+    color: black; /* Change font color to black */
+    padding: 20px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Custom class for centering content */
+.align-center {
+    text-align: center;
+}
+
+h1, h2, h5 {
+    color: black;
+    font-weight: 600;
+
+}
+
+.bootbox-body{
+    color: black;
+    font-weight: 600;
+
+}
+
